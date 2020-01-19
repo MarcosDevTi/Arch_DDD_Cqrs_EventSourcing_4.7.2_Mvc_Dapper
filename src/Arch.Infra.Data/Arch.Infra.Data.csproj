@@ -70,6 +70,10 @@
       <Project>{D2F40500-C894-45A1-9A5B-71CE98043192}</Project>
       <Name>Arch.Domain</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Arch.Infra.Shared\Arch.Infra.Shared.csproj">
+      <Project>{D19D0EA1-B0A2-41D7-8414-510BE529D7E9}</Project>
+      <Name>Arch.Infra.Shared</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

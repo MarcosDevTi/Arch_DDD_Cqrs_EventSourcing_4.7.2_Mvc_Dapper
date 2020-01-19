@@ -1,6 +1,9 @@
-﻿using System;
+﻿using Arch.Infra.Shared.EventSourcing;
+using Dapper;
+using System;
 using System.Data;
 using System.Data.SQLite;
+using System.Text;
 
 namespace Arch.Infra.DataDapper.Sqlite
 {
@@ -18,6 +21,20 @@ namespace Arch.Infra.DataDapper.Sqlite
         {
             if (Connection.State != ConnectionState.Closed)
                 Connection.Close();
+        }
+
+
+        public void SaveEvent(EventEntity @event)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("INSERT INTO \"EventEntities\" " +
+                "(\"Id\", \"Action\", \"AggregateId\", \"Assembly\", \"Data\", \"When\", \"Who\")");
+            sb.AppendLine($"VALUES " +
+                $"('{Guid.NewGuid()}', '{@event.Action}', '{@event.AggregateId}', '{@event.Assembly}',");
+            sb.AppendLine($"'{@event.Data}', '{@event.When}', '{@event.Who}');");
+            var sql = sb.ToString();
+
+            Connection.Execute(sql);
         }
     }
 }
