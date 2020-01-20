@@ -11,8 +11,8 @@ namespace Arch.CqrsClient.Commands.Customers
         public string Email { get; set; }
         [DataType(DataType.Date)]
         public DateTime BirthDate { get; set; }
-
         public int Score { get; set; }
+
         public string Street { get; set; }
         public string Number { get; set; }
         public string City { get; set; }

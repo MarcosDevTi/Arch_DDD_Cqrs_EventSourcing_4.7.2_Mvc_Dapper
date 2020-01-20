@@ -41,6 +41,12 @@ namespace Arch.CqrsHandlers
             _eventSourcingContext.SaveEvent(@event);
         }
 
+        public void AddEventSourcing(Message command, string actionName, object data)
+        {
+            var @event = EventEntity.GetEvent(actionName, command, "Marcos", data);
+            _eventSourcingContext.SaveEvent(@event);
+        }
+
         public bool InvalidTransaction()
         {
             return _notifications.HasNotifications();

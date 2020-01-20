@@ -36,5 +36,21 @@ namespace Arch.Infra.DataDapper.Sqlite
 
             return this.Connection.QuerySingle<bool>(sql);
         }
+
+
+        public bool Exists(string expression, string table)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("SELECT CASE");
+            sb.AppendLine("    WHEN EXISTS (");
+            sb.AppendLine("        SELECT 1");
+            sb.AppendLine($"        FROM \"{table}\"");
+            sb.AppendLine($"        WHERE {expression})");
+            sb.AppendLine("    THEN 1 ELSE 0");
+            sb.AppendLine("END");
+            var sql = sb.ToString();
+
+            return this.Connection.QuerySingle<bool>(sql);
+        }
     }
 }

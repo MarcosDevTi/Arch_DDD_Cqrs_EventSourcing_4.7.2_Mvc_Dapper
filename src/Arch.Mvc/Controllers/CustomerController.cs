@@ -4,6 +4,7 @@ using Arch.CqrsClient.Queries.Customers;
 using Arch.Infra.Shared.Cqrs;
 using Arch.Infra.Shared.DomainNotifications;
 using System;
+using System.Collections.Generic;
 using System.Web.Mvc;
 
 namespace Arch.Mvc.Controllers
@@ -15,14 +16,17 @@ namespace Arch.Mvc.Controllers
         public CustomerController(IProcessor processor, IDomainNotification notifications)
             : base(notifications) => _processor = processor;
 
-        public ActionResult Index()
+        public ActionResult Index(string successMessage = null)
         {
+            ViewBag.MessageSuccess = successMessage;
             return View(_processor.Get(new GetCustomers(5)));
         }
 
         [HttpGet]
         public ActionResult Create()
         {
+            ViewBag.HasError = false;
+            ViewBag.Errors = new List<string>();
             return View();
         }
 
@@ -30,7 +34,7 @@ namespace Arch.Mvc.Controllers
         public ActionResult Create(CreateCustomer createCustomer)
         {
             _processor.Send(createCustomer);
-            return RedirectToAction("Index");
+            return ViewWithValidation(createCustomer);
         }
 
         public ActionResult Edit(Guid customerId)
@@ -44,6 +48,12 @@ namespace Arch.Mvc.Controllers
         {
             _processor.Send(updateCustomer);
             return ViewWithValidation(updateCustomer);
+        }
+
+        public ActionResult Delete(Guid id)
+        {
+            _processor.Send(new DeleteCustomer { Id = id });
+            return RedirectToAction("Index");
         }
     }
 }

@@ -14,18 +14,18 @@ namespace Arch.Infra.Shared.EventSourcing
     public class EventEntity
     {
         public EventEntity() { }
-        public EventEntity(string action, dynamic entity, string who, object lastEntity = null)
+        public EventEntity(string action, object entity, string who, object lastEntity = null)
         {
             Id = Guid.NewGuid();
             When = DateTime.Now.ToString(CultureInfo.InvariantCulture);
             Action = action;
             Data = BuildJsonData(entity, lastEntity);
-            AggregateId = entity.Id;
+            AggregateId = ((dynamic)entity)?.Id;
             Who = who;
             Assembly = entity.GetType().FullName;
         }
 
-        public static EventEntity GetEvent(string action, Message command, string who, object lastEntity = null)
+        public static EventEntity GetEvent(string action, Message command, string who, Message lastEntity = null)
         {
             var result = new EventEntity();
 
@@ -34,14 +34,30 @@ namespace Arch.Infra.Shared.EventSourcing
             result.Action = action;
             result.Data = BuildJsonDataCommand(command, lastEntity);
             result.AggregateId = command.AggregateId;
+            result.Assembly = command.GetType().FullName;
             result.Who = who;
-
 
             return result;
         }
 
 
-        public static EventEntity GetEvent(string action, Guid aggregateId, ICommand command, string who, object lastEntity = null)
+        public static EventEntity GetEvent(string action, Message command, string who, object data)
+        {
+            var result = new EventEntity();
+
+            result.Id = Guid.NewGuid();
+            result.When = DateTime.Now.ToString(CultureInfo.InvariantCulture);
+            result.Action = action;
+            result.Data = JsonConvert.SerializeObject(data);
+            result.AggregateId = command.AggregateId;
+            result.Assembly = command.GetType().FullName;
+            result.Who = who;
+
+            return result;
+        }
+
+
+        public static EventEntity GetEvent(string action, Guid aggregateId, ICommand command, string who, ICommand lastEntity = null)
         {
             var result = new EventEntity();
 
@@ -65,13 +81,12 @@ namespace Arch.Infra.Shared.EventSourcing
 
         public string Assembly { get; set; }
 
-        public object ReadToObject(EventEntity entity, Type domainTypeAssembly)
+        public object ReadToObject(EventEntity entity, Assembly assembly)
         {
-            var asm = domainTypeAssembly.Assembly;
-            var type = asm.GetType(entity.Assembly);
+            var type = assembly.GetType(entity.Assembly);
 
-            var memberProperties = GetAttributs(type).Item1;
-            var memberNames = GetAttributs(type).Item2;
+            var memberProperties = GetAttributs(type)?.Item1;
+            var memberNames = GetAttributs(type)?.Item2;
 
             var listIgnoredMembers = memberProperties?.Select(_ => _.Name);
             var jo = JObject.Parse(entity.Data);
@@ -111,7 +126,10 @@ namespace Arch.Infra.Shared.EventSourcing
 
             var map = assemblies.SelectMany(_ => _.GetExportedTypes())
                 .FirstOrDefault(_ => tipoGen.IsAssignableFrom(_));
-
+            if (map == null)
+            {
+                return null;
+            }
             var entityType = (dynamic)Activator.CreateInstance(map);
             entityType.Configuration(entityType);
             var membersName = (Dictionary<MemberInfo, string>)entityType.MembersDisplayName;
@@ -119,7 +137,7 @@ namespace Arch.Infra.Shared.EventSourcing
             return new Tuple<List<MemberInfo>, Dictionary<MemberInfo, string>>(membersProperties, membersName);
         }
 
-        private static string BuildJsonDataCommand(ICommand command, object lastEntity = null)
+        private static string BuildJsonDataCommand(ICommand command, ICommand lastEntity = null)
         {
             var iso = new IsoDateTimeConverter { DateTimeFormat = "yyyy-MM-dd HH:mm:ss" };
             var eventSerialized = JsonConvert.SerializeObject(command, iso);
