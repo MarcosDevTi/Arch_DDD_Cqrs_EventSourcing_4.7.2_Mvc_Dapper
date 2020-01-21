@@ -50,11 +50,13 @@
     <Compile Include="Commands\Customers\Validations\CreateCustomerValidation.cs" />
     <Compile Include="Commands\Customers\Validations\CustomerCommandValidation.cs" />
     <Compile Include="Commands\Customers\Validations\UpdateCustomerValidation.cs" />
+    <Compile Include="Commands\Inserts\InsertVolumeCustomers.cs" />
+    <Compile Include="Commands\Inserts\TrucateCustomers.cs" />
     <Compile Include="Models\CustomerItemIndex.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Queries\Customers\GetCustomerForUpdate.cs" />
+    <Compile Include="Queries\Customers\GetCustomersPaging.cs" />
     <Compile Include="Queries\EventSourcing\GetCustomerHistory.cs" />
-    <Compile Include="Queries\GetCustomers.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Arch.Infra.Shared\Arch.Infra.Shared.csproj">

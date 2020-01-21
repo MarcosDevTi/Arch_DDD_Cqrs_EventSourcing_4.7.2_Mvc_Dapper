@@ -1,40 +1,45 @@
 ﻿using Arch.CqrsClient.Commands.Customers;
 using Arch.CqrsClient.Models;
-using Arch.CqrsClient.Queries;
 using Arch.CqrsClient.Queries.Customers;
 using Arch.Infra.DataDapper.Sqlite;
 using Arch.Infra.Shared.Cqrs.Query;
+using Arch.Infra.Shared.Pagination;
 using Dapper;
-using System.Collections.Generic;
 using System.Text;
 
 namespace Arch.CqrsHandlers.Customers
 {
     public class CustomerQueryHandler :
-        IQueryHandler<GetCustomers, IEnumerable<CustomerItemIndex>>,
-        IQueryHandler<GetCustomerForUpdate, UpdateCustomer>
+        IQueryHandler<GetCustomerForUpdate, UpdateCustomer>,
+        IQueryHandler<GetCustomersPaging, PagedResult<CustomerItemIndex>>
     {
-        private readonly DapperContext _context;
+        private readonly ArchContext _context;
 
-        public CustomerQueryHandler(DapperContext context)
+        public CustomerQueryHandler(ArchContext context)
         {
             _context = context;
         }
 
-        public IEnumerable<CustomerItemIndex> Handle(GetCustomers query)
+        private int CustomerCount()
+        {
+            var sql = "SELECT COUNT(*) FROM CUSTOMERS";
+            return _context.Connection.QuerySingleOrDefault<int>(sql);
+        }
+
+        public PagedResult<CustomerItemIndex> Handle(GetCustomersPaging query)
         {
             var sb = new StringBuilder();
             sb.AppendLine("SELECT " +
-                "(((\"_.Address\".\"Number\" || ' ') || \"_.Address\".\"Street\") || ' ') || \"_.Address\".\"City\" AS \"Address\", " +
+                "(((\"Address\".\"Number\" || ' ') || \"Address\".\"Street\") || ' ') || \"Address\".\"City\" AS \"Address\", " +
                 "\"_\".\"BirthDate\", \"_\".\"EmailAddress\" AS \"Email\", \"_\".\"Id\", \"_\".\"FirstName\" AS \"Name\", \"_\".\"Score\"");
             sb.AppendLine("FROM \"Customers\" AS \"_\"");
-            sb.AppendLine("INNER JOIN \"Addresses\" AS \"_.Address\" ON \"_\".\"AddressId\" = \"_.Address\".\"Id\"");
-            sb.AppendLine("ORDER BY \"Name\"");
-            sb.AppendLine("LIMIT '5' OFFSET '0'");
+            sb.AppendLine("INNER JOIN \"Addresses\" AS \"Address\" ON \"_\".\"AddressId\" = \"Address\".\"Id\"");
+            sb.AppendLine($"ORDER BY {query.Paging.SortColumn ?? "_.FirstName"} {query.Paging.SortDirection}");
+            sb.AppendLine($"LIMIT '{query.Paging.PageSize}' OFFSET '{query.Paging.PageIndex}'");
             var sql = sb.ToString();
-            var result = _context.Connection.Query<CustomerItemIndex>(sql);
+            var items = _context.Connection.Query<CustomerItemIndex>(sql);
 
-            return result;
+            return new PagedResult<CustomerItemIndex>(items, CustomerCount(), query.Paging);
         }
 
         public UpdateCustomer Handle(GetCustomerForUpdate query)
@@ -50,5 +55,7 @@ namespace Arch.CqrsHandlers.Customers
             var sql = sb.ToString();
             return _context.Connection.QuerySingle<UpdateCustomer>(sql);
         }
+
+
     }
 }

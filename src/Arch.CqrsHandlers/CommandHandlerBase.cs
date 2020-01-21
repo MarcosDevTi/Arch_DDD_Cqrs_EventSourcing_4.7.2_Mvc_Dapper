@@ -8,13 +8,13 @@ namespace Arch.CqrsHandlers
 {
     public class CommandHandlerBase
     {
-        private readonly DapperContext _context;
-        private readonly EventSourcingDapperContext _eventSourcingContext;
+        private readonly ArchContext _context;
+        private readonly EventSourcingContext _eventSourcingContext;
         private readonly IDomainNotification _notifications;
 
         public CommandHandlerBase(
-            DapperContext context,
-            EventSourcingDapperContext eventSourcingContext,
+            ArchContext context,
+            EventSourcingContext eventSourcingContext,
             IDomainNotification notifications)
         {
             _context = context;

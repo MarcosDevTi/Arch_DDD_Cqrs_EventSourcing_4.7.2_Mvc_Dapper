@@ -4,9 +4,9 @@ using System.Collections.Generic;
 
 namespace Arch.CqrsClient.Queries.EventSourcing
 {
-    public class GetCustomerHistory : IQuery<IReadOnlyList<object>>
+    public class GetHistory : IQuery<IReadOnlyList<object>>
     {
-        public GetCustomerHistory(Guid aggregateId)
+        public GetHistory(Guid aggregateId)
         {
             AggregateId = aggregateId;
         }

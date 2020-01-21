@@ -4,9 +4,9 @@ namespace Arch.CqrsHandlers
 {
     public class QueryHandlerBase
     {
-        private readonly DapperContext _context;
+        private readonly ArchContext _context;
 
-        public QueryHandlerBase(DapperContext context)
+        public QueryHandlerBase(ArchContext context)
         {
             _context = context;
         }

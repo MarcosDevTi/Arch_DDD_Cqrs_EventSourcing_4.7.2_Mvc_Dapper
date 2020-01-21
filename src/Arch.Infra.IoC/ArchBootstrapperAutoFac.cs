@@ -21,8 +21,8 @@ namespace Arch.Infra.IoC
             builder.RegisterType<Processor>().As<IProcessor>().InstancePerRequest();
             builder.RegisterType<DomainNotificationHandler>().As<IDomainNotification>().InstancePerRequest();
             builder.AddCqrsAutoFac<CustomerCommandHandler>();
-            builder.RegisterType<DapperContext>();
-            builder.RegisterType<EventSourcingDapperContext>().InstancePerRequest();
+            builder.RegisterType<ArchContext>();
+            builder.RegisterType<EventSourcingContext>().InstancePerRequest();
         }
     }
 }

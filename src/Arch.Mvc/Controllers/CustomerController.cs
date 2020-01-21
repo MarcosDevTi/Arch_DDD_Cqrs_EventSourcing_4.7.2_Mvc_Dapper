@@ -1,8 +1,8 @@
 ﻿using Arch.CqrsClient.Commands.Customers;
-using Arch.CqrsClient.Queries;
 using Arch.CqrsClient.Queries.Customers;
 using Arch.Infra.Shared.Cqrs;
 using Arch.Infra.Shared.DomainNotifications;
+using Arch.Infra.Shared.Pagination;
 using System;
 using System.Collections.Generic;
 using System.Web.Mvc;
@@ -16,10 +16,10 @@ namespace Arch.Mvc.Controllers
         public CustomerController(IProcessor processor, IDomainNotification notifications)
             : base(notifications) => _processor = processor;
 
-        public ActionResult Index(string successMessage = null)
+        public ActionResult Index(Paging paging, string successMessage = null)
         {
             ViewBag.MessageSuccess = successMessage;
-            return View(_processor.Get(new GetCustomers(5)));
+            return View(_processor.Get(new GetCustomersPaging(paging)));
         }
 
         [HttpGet]

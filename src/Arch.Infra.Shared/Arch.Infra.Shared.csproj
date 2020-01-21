@@ -67,6 +67,9 @@
     <Compile Include="EventSourcing\EventSourceExtensions.cs" />
     <Compile Include="EventSourcing\SourceFluent.cs" />
     <Compile Include="EventSourcing\SourceTypeBuilder.cs" />
+    <Compile Include="Pagination\PagedResult.cs" />
+    <Compile Include="Pagination\Paging.cs" />
+    <Compile Include="Pagination\SortDirection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

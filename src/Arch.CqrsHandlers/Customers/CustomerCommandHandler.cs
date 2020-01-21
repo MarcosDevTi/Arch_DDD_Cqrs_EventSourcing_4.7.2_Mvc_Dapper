@@ -1,9 +1,12 @@
 ﻿using Arch.CqrsClient.Commands.Customers;
+using Arch.CqrsClient.Commands.Inserts;
 using Arch.Infra.DataDapper.Sqlite;
 using Arch.Infra.Shared.Cqrs.Commands;
 using Arch.Infra.Shared.DomainNotifications;
+using Bogus;
 using Dapper;
 using System;
+using System.Collections.Generic;
 using System.Text;
 
 namespace Arch.CqrsHandlers.Customers
@@ -11,18 +14,21 @@ namespace Arch.CqrsHandlers.Customers
     public class CustomerCommandHandler : CommandHandlerBase,
         ICommandHandler<CreateCustomer>,
         ICommandHandler<UpdateCustomer>,
-        ICommandHandler<DeleteCustomer>
+        ICommandHandler<DeleteCustomer>,
+        ICommandHandler<InsertVolumeCustomers>,
+        ICommandHandler<TrucateCustomers>
     {
-        private readonly DapperContext _context;
-        private readonly EventSourcingDapperContext _eventSourcingContext;
+        private readonly ArchContext _context;
+        private readonly EventSourcingContext _eventSourcingContext;
 
         public CustomerCommandHandler(
-            DapperContext context,
+            ArchContext context,
             IDomainNotification notifications,
-            EventSourcingDapperContext eventSourcingContext)
+            EventSourcingContext eventSourcingContext)
             : base(context, eventSourcingContext, notifications)
         {
             _context = context;
+            _eventSourcingContext = eventSourcingContext;
         }
 
         public void Handle(CreateCustomer command)
@@ -174,6 +180,43 @@ namespace Arch.CqrsHandlers.Customers
             .AppendLine("DELETE FROM \"Addresses\"")
             .AppendLine($"WHERE \"Id\" = '{addressId}';").ToString();
             _context.Connection.Execute(sql);
+        }
+
+        public void Handle(InsertVolumeCustomers command)
+        {
+            var faker = new Faker();
+            var idCustomer = Guid.NewGuid();
+
+            var list = new List<CreateCustomer>();
+            for (var i = 0; i < command.InsertsCount; i++)
+            {
+                var minDate = DateTime.Now.AddYears(-30);
+                var maxDate = DateTime.Now.AddYears(-60);
+
+                var customer = new CreateCustomer
+                {
+                    FirstName = faker.Name.FirstName(),
+                    LastName = faker.Name.LastName(),
+                    Email = faker.Person.Email,
+                    BirthDate = faker.Date.Between(minDate, maxDate),
+
+                    Street = faker.Address.StreetName(),
+                    Number = faker.Address.BuildingNumber(),
+                    City = faker.Address.City(),
+                    ZipCode = faker.Address.ZipCode()
+                };
+
+                list.Add(customer);
+            }
+            list.ForEach(_ => SaveCustomer(_, Guid.NewGuid()));
+            return;
+        }
+
+        public void Handle(TrucateCustomers command)
+        {
+            _context.Connection.Execute("DELETE FROM CUSTOMERS");
+            _context.Connection.Execute("DELETE FROM ADDRESSES");
+            _eventSourcingContext.Connection.Execute("DELETE FROM EVENTENTITIES");
         }
     }
 }

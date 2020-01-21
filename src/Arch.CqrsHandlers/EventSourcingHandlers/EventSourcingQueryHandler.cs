@@ -11,19 +11,19 @@ using System.Text;
 namespace Arch.CqrsHandlers.EventSourcingHandlers
 {
     public class EventSourcingQueryHandler :
-        IQueryHandler<GetCustomerHistory, IReadOnlyList<object>>
+        IQueryHandler<GetHistory, IReadOnlyList<object>>
     {
-        private readonly EventSourcingDapperContext _eventSourcingContext;
-        public EventSourcingQueryHandler(EventSourcingDapperContext eventSourcingContext)
+        private readonly EventSourcingContext _eventSourcingContext;
+        public EventSourcingQueryHandler(EventSourcingContext eventSourcingContext)
         {
             _eventSourcingContext = eventSourcingContext;
         }
-        public IReadOnlyList<object> Handle(GetCustomerHistory query) =>
+        public IReadOnlyList<object> Handle(GetHistory query) =>
             GetEventSourcingEvent(query.AggregateId).ToList();
 
         protected IEnumerable<object> GetEventSourcingEvent(Guid aggregateId)
         {
-            return GetEventEntities(aggregateId).Select(_ => _.ReadToObject(_, typeof(GetCustomerHistory).Assembly));
+            return GetEventEntities(aggregateId).Select(_ => _.ReadToObject(_, typeof(GetHistory).Assembly));
         }
 
         public IEnumerable<EventEntity> GetEventEntities(Guid aggregateId)

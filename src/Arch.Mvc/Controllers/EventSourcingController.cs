@@ -14,8 +14,7 @@ namespace Arch.Mvc.Controllers
         }
         public ActionResult History(Guid aggregateId, string controllerName, string actionName)
         {
-            var history = _processor.Get(new GetCustomerHistory(aggregateId));
-            //var customersHistory = _processor.Get(new GetCustomerHistory { AggregateId = aggregateId });
+            var history = _processor.Get(new GetHistory(aggregateId));
             return View(history);
         }
     }

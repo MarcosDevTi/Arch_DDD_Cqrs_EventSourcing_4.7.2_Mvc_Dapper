@@ -6,11 +6,11 @@ using System.Text;
 
 namespace Arch.Infra.DataDapper.Sqlite
 {
-    public class DapperContext : IDisposable
+    public class ArchContext : IDisposable
     {
         public SQLiteConnection Connection { get; set; }
 
-        public DapperContext()
+        public ArchContext()
         {
             Connection = new SQLiteConnection(Settings.ConnectionStringSqliteLocal);
             Connection.Open();
