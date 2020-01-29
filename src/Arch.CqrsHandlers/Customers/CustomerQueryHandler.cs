@@ -1,17 +1,21 @@
 ﻿using Arch.CqrsClient.Commands.Customers;
+using Arch.CqrsClient.Extensions;
 using Arch.CqrsClient.Models;
 using Arch.CqrsClient.Queries.Customers;
 using Arch.Infra.DataDapper.Sqlite;
 using Arch.Infra.Shared.Cqrs.Query;
 using Arch.Infra.Shared.Pagination;
 using Dapper;
+using System.Collections.Generic;
 using System.Text;
 
 namespace Arch.CqrsHandlers.Customers
 {
     public class CustomerQueryHandler :
         IQueryHandler<GetCustomerForUpdate, UpdateCustomer>,
-        IQueryHandler<GetCustomersPaging, PagedResult<CustomerItemIndex>>
+        IQueryHandler<GetCustomersPaging, PagedResult<CustomerItemIndex>>,
+        IQueryHandler<GetCustomersCustomSearchAbstract, IEnumerable<CustomerItemIndex>>,
+        IQueryHandler<GetCustomersCustomSearch, IEnumerable<CustomerItemIndex>>
     {
         private readonly ArchContext _context;
 
@@ -56,6 +60,32 @@ namespace Arch.CqrsHandlers.Customers
             return _context.Connection.QuerySingle<UpdateCustomer>(sql);
         }
 
+        public IEnumerable<CustomerItemIndex> Handle(GetCustomersCustomSearchAbstract query)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("SELECT \"_\".\"Id\", \"_\".\"AddressId\", \"_\".\"BirthDate\", \"_\".\"EmailAddress\" AS \"Email\", " +
+                "\"_\".\"FirstName\", \"_\".\"LastName\", \"_\".\"Score\", \"_.Address\".\"City\", " +
+                "\"_.Address\".\"Number\", \"_.Address\".\"Street\", \"_.Address\".\"ZipCode\"");
+            sb.AppendLine("FROM \"Customers\" AS \"_\"");
+            sb.AppendLine("INNER JOIN \"Addresses\" AS \"_.Address\" ON \"_\".\"AddressId\" = \"_.Address\".\"Id\"");
+            var sql = sb.ToString();
+            var quere = sql + query.Search.GetWhereSql("_");
 
+            return _context.Connection.Query<CustomerItemIndex>(sql);
+        }
+
+        public IEnumerable<CustomerItemIndex> Handle(GetCustomersCustomSearch query)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("SELECT \"_\".\"Id\", \"_\".\"AddressId\", \"_\".\"BirthDate\", \"_\".\"EmailAddress\" AS \"Email\", " +
+                "\"_\".\"FirstName\", \"_\".\"LastName\", \"_\".\"Score\", \"_.Address\".\"City\", " +
+                "\"_.Address\".\"Number\", \"_.Address\".\"Street\", \"_.Address\".\"ZipCode\"");
+            sb.AppendLine("FROM \"Customers\" AS \"_\"");
+            sb.AppendLine("INNER JOIN \"Addresses\" AS \"_.Address\" ON \"_\".\"AddressId\" = \"_.Address\".\"Id\"");
+            var sql = sb.ToString();
+            var quere = sql + query.Search.GetWhereSql("_");
+
+            return _context.Connection.Query<CustomerItemIndex>(sql);
+        }
     }
 }

@@ -1,4 +1,6 @@
-﻿using Arch.CqrsClient.Commands.Customers;
+﻿using Arch.CqrsClient.Attributes;
+using Arch.CqrsClient.Commands.Customers;
+using Arch.CqrsClient.Models.SearchModel;
 using Arch.CqrsClient.Queries.Customers;
 using Arch.Infra.Shared.Cqrs;
 using Arch.Infra.Shared.DomainNotifications;
@@ -18,6 +20,26 @@ namespace Arch.Mvc.Controllers
 
         public ActionResult Index(Paging paging, string successMessage = null)
         {
+            var aa = _processor.Get(new GetCustomersCustomSearchAbstract
+            {
+                Search = new CustomerSearchAbstract
+                {
+                    FirstName = new PropertySearch<string>("First name test"),
+                    Email = new PropertySearch<string>("email test", Comparateur.StartWith),
+                    BirthDate = new PropertySearch<DateTime?>(DateTime.Now),
+                    Score = new PropertySearch<int?>(51)
+                }
+            });
+            var aaa = _processor.Get(new GetCustomersCustomSearch
+            {
+                Search = new CustomerSearch
+                {
+                    FirstName = "first name",
+                    BirthDate = DateTime.Now,
+                    Score = 45
+                }
+            });
+
             ViewBag.MessageSuccess = successMessage;
             return View(_processor.Get(new GetCustomersPaging(paging)));
         }
