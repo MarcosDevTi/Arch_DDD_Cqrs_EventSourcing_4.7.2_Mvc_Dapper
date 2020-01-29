@@ -1,5 +1,4 @@
 ﻿using Arch.CqrsClient.Attributes;
-using Arch.CqrsClient.Models.SearchModel;
 using System;
 using System.Reflection;
 using System.Text;
@@ -8,31 +7,6 @@ namespace Arch.CqrsClient.Extensions
 {
     public static class CqrsExtensions
     {
-        public static string GetWhereSql(this CustomerSearchAbstract obj, string alias = null)
-        {
-            var sb = new StringBuilder();
-            sb.AppendLine("where");
-            var props = obj.GetType().GetProperties();
-
-            foreach (var prop in props)
-            {
-                var pro = prop.GetCustomAttribute<ColumnName>()?.Nom ?? prop.Name;
-
-                var valeurProp = prop.GetValue(obj);
-                var al = alias == null ? string.Empty : alias + ".";
-                if (valeurProp != null)
-                    sb.AppendLine($"{al}{pro} {valeurProp.FormatSqlValeur()} and ");
-            }
-
-            var result = sb.ToString();
-            if (result != string.Empty)
-            {
-                result = result.Substring(0, result.Length - 6);
-            }
-
-            return result;
-        }
-
         public static string GetWhereSql(this object obj, string alias = null)
         {
             var sb = new StringBuilder();
@@ -60,19 +34,19 @@ namespace Arch.CqrsClient.Extensions
 
         public static string FormatSqlValeur(this object valeur)
         {
+            var type = valeur.GetType();
+            var isPropertyComparable = type.IsConstructedGenericType &&
+                   type.GetGenericTypeDefinition() == typeof(PropertyComparable<>);
+
             var result = "";
 
-            var valProperty = ((dynamic)valeur).Property;
-            var comparator = (Comparateur)((dynamic)valeur).Comparateur;
+            var valProperty = isPropertyComparable ? ((dynamic)valeur).Property : valeur;
+            var comparator = isPropertyComparable ? (Comparateur)((dynamic)valeur).Comparateur : Comparateur.Equals;
 
             switch (valProperty)
             {
                 case string s:
-                    {
-                        var valProp = (string)valProperty;
-                        result = valProp.ApplyComparatorString(comparator);
-                    }
-
+                    result = ((string)valProperty).ApplyComparatorString(comparator);
                     break;
                 case DateTime d:
                     result = $" = '{valProperty}'";

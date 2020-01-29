@@ -357,6 +357,7 @@
     <Content Include="Views\Customer\Edit.cshtml" />
     <Content Include="Views\EventSourcing\Index.cshtml" />
     <Content Include="Views\EventSourcing\History.cshtml" />
+    <Content Include="Views\Shared\_SearchForm.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />

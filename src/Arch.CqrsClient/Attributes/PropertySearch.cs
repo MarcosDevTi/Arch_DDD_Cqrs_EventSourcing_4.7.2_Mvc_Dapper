@@ -1,13 +1,13 @@
 ﻿namespace Arch.CqrsClient.Attributes
 {
-    public class PropertySearch<T>
+    public class PropertyComparable<T>
     {
-        public PropertySearch(T property)
+        public PropertyComparable(T property)
         {
             Property = property;
         }
 
-        public PropertySearch(T property, Comparateur comparateur)
+        public PropertyComparable(T property, Comparateur comparateur)
         {
             Property = property;
             Comparateur = comparateur;

@@ -20,25 +20,18 @@ namespace Arch.Mvc.Controllers
 
         public ActionResult Index(Paging paging, string successMessage = null)
         {
-            var aa = _processor.Get(new GetCustomersCustomSearchAbstract
-            {
-                Search = new CustomerSearchAbstract
-                {
-                    FirstName = new PropertySearch<string>("First name test"),
-                    Email = new PropertySearch<string>("email test", Comparateur.StartWith),
-                    BirthDate = new PropertySearch<DateTime?>(DateTime.Now),
-                    Score = new PropertySearch<int?>(51)
-                }
-            });
-            var aaa = _processor.Get(new GetCustomersCustomSearch
+            var aa = _processor.Get(new GetCustomersCustomSearch
             {
                 Search = new CustomerSearch
                 {
-                    FirstName = "first name",
-                    BirthDate = DateTime.Now,
-                    Score = 45
+                    FirstName = new PropertyComparable<string>("First name test"),
+                    LastName = "Last Name",
+                    Email = new PropertyComparable<string>("email test", Comparateur.StartWith),
+                    BirthDate = new PropertyComparable<DateTime?>(DateTime.Now),
+                    Score = new PropertyComparable<int?>(51)
                 }
             });
+
 
             ViewBag.MessageSuccess = successMessage;
             return View(_processor.Get(new GetCustomersPaging(paging)));

@@ -14,7 +14,6 @@ namespace Arch.CqrsHandlers.Customers
     public class CustomerQueryHandler :
         IQueryHandler<GetCustomerForUpdate, UpdateCustomer>,
         IQueryHandler<GetCustomersPaging, PagedResult<CustomerItemIndex>>,
-        IQueryHandler<GetCustomersCustomSearchAbstract, IEnumerable<CustomerItemIndex>>,
         IQueryHandler<GetCustomersCustomSearch, IEnumerable<CustomerItemIndex>>
     {
         private readonly ArchContext _context;
@@ -58,20 +57,6 @@ namespace Arch.CqrsHandlers.Customers
             sb.AppendLine("LIMIT 1");
             var sql = sb.ToString();
             return _context.Connection.QuerySingle<UpdateCustomer>(sql);
-        }
-
-        public IEnumerable<CustomerItemIndex> Handle(GetCustomersCustomSearchAbstract query)
-        {
-            var sb = new StringBuilder();
-            sb.AppendLine("SELECT \"_\".\"Id\", \"_\".\"AddressId\", \"_\".\"BirthDate\", \"_\".\"EmailAddress\" AS \"Email\", " +
-                "\"_\".\"FirstName\", \"_\".\"LastName\", \"_\".\"Score\", \"_.Address\".\"City\", " +
-                "\"_.Address\".\"Number\", \"_.Address\".\"Street\", \"_.Address\".\"ZipCode\"");
-            sb.AppendLine("FROM \"Customers\" AS \"_\"");
-            sb.AppendLine("INNER JOIN \"Addresses\" AS \"_.Address\" ON \"_\".\"AddressId\" = \"_.Address\".\"Id\"");
-            var sql = sb.ToString();
-            var quere = sql + query.Search.GetWhereSql("_");
-
-            return _context.Connection.Query<CustomerItemIndex>(sql);
         }
 
         public IEnumerable<CustomerItemIndex> Handle(GetCustomersCustomSearch query)
