@@ -358,10 +358,13 @@
     <Content Include="Views\EventSourcing\Index.cshtml" />
     <Content Include="Views\EventSourcing\History.cshtml" />
     <Content Include="Views\Shared\_SearchForm.cshtml" />
+    <Content Include="Views\Customer\View.cshtml" />
+    <Content Include="Views\Customer\DisplayTemplates\CustomerItemIndex.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />
     <Folder Include="Views\Insert\" />
+    <Folder Include="Views\Shared\DisplayTemplates\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

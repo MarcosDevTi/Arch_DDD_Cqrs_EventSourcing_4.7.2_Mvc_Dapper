@@ -13,7 +13,7 @@ namespace Arch.Mvc.Helpers
     {
         public static MvcHtmlString GetSortingUrl<T>(this HtmlHelper html, PagedResult<T> pagedResult, string propertyName, string url)
         {
-            string extendedUrl = url
+            var extendedUrl = url
                 .SetParameter("sortColumn", propertyName)
                 .SetParameter("sortDirection", GetSortDirection(pagedResult.Paging, propertyName).ToString())
                 .SetParameter("pageIndex", "0");
@@ -79,7 +79,7 @@ namespace Arch.Mvc.Helpers
 
         private static string SetParameter(this string url, string param, string value)
         {
-            int questionMarkIndex = url.IndexOf('?');
+            var questionMarkIndex = url.IndexOf('?');
             NameValueCollection parameters;
             var result = new StringBuilder();
 
@@ -113,7 +113,7 @@ namespace Arch.Mvc.Helpers
 
         private static SortDirection GetSortDirection(Paging paging, string propertyName)
         {
-            SortDirection sortDirection = SortDirection.Asc;
+            var sortDirection = SortDirection.Asc;
 
             if (paging != null
                 && propertyName.Equals(paging.SortColumn)
@@ -135,7 +135,7 @@ namespace Arch.Mvc.Helpers
                     result.Add(i);
             }
 
-            int current = currentIndex - 3;
+            var current = currentIndex - 3;
 
             while (current <= currentIndex + 3)
             {

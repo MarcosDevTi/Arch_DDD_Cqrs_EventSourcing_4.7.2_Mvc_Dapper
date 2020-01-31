@@ -1,0 +1,13 @@
+﻿@using Arch.CqrsClient.Models
+@model CustomerItemIndex
+<tr>
+    <td>@Model.Name</td>
+    <td>@Model.Email</td>
+    <td>@Model.BirthDate</td>
+    <td>@Model.Score</td>
+    <td>@Model.Address</td>
+
+    <td>@Html.ActionLink("Edit", "Edit", new { customerId = Model.Id }, new { @class = "btn btn-warning btn-sm" })</td>
+    <td>@Html.ActionLink("History", "History", "EventSourcing", new { aggregateId = Model.Id, controllerName = "Customer", actionName = "Index" }, new { @class = "btn btn-success btn-sm" })</td>
+    <td>@Html.ActionLink("Delete", "Delete", new { Model.Id }, new { @class = "btn btn-danger btn-sm" })</td>
+</tr>

@@ -33,6 +33,8 @@ namespace Arch.Infra.Shared.Pagination
             }
         }
 
+
+
         public Paging Paging { get; private set; }
 
         public IEnumerator<T> GetEnumerator()

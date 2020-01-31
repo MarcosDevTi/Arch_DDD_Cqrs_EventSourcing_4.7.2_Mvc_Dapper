@@ -20,7 +20,6 @@
     </div>
 }
 
-    
 
 <table class="table table-striped">
     <thead>
@@ -35,22 +34,9 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
-        {
-        <tr>
-            <td>@item.Name</td>
-            <td>@item.Email</td>
-            <td>@item.BirthDate</td>
-            <td>@item.Score</td>
-            <td>@item.Address</td>
-
-            <td>@Html.ActionLink("Edit", "Edit", new { customerId = item.Id }, new { @class = "btn btn-warning" })</td>
-            <td>@Html.ActionLink("History", "History", "EventSourcing", new { aggregateId = item.Id, controllerName = "Customer", actionName = "Index" }, new { @class = "btn btn-success" })</td>
-            <td>@Html.ActionLink("Delete", "Delete", new { item.Id }, new { @class = "btn btn-danger" })</td>
-
-
-        </tr>
-        }
+        @Html.DisplayFor(customer => customer)
     </tbody>
 </table>
 @Html.GetPager(this.Model, this.Request.RawUrl)
+
+

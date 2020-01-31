@@ -22,3 +22,8 @@ select,
 textarea {
     max-width: 280px;
 }
+
+
+.table th, .table td {
+    padding: 0.6rem !important;
+}

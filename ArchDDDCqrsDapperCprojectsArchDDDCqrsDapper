@@ -1,0 +1,53 @@
+[33mcommit 84391abc87ca98d0a6d70996260f04e46c12e104[m[33m ([m[1;36mHEAD -> [m[1;32mmaster[m[33m, [m[1;31morigin/master[m[33m)[m
+Author: Marcos Souza <marcos.dev.ti@gmail.com>
+Date:   Wed Jan 29 18:09:04 2020 -0500
+
+    .
+
+[33mcommit df86a2c3604dc0204a49d69b9a2fa2f53e359697[m
+Author: Marcos de Souza <marcos.vieiradesouza-consultant@environnement.gouv.qc.ca>
+Date:   Wed Jan 29 16:26:00 2020 -0500
+
+    Generic Search
+
+[33mcommit 460eb142be1e3232e9a7bad6da42780a40186fcc[m
+Author: Marcos Souza <marcos.dev.ti@gmail.com>
+Date:   Wed Jan 29 00:39:29 2020 -0500
+
+    Generic search
+
+[33mcommit cd305da002a50b642e859f824e57c78ae989d88b[m
+Author: Marcos Souza <marcos.dev.ti@gmail.com>
+Date:   Mon Jan 20 22:26:07 2020 -0500
+
+    Pagination and inserts
+
+[33mcommit 95e372c94875469c9b10c0d17b90bc6e87b10a51[m
+Author: Marcos Souza <marcos.dev.ti@gmail.com>
+Date:   Sun Jan 19 21:53:43 2020 -0500
+
+    Command handlers
+
+[33mcommit 24925d68d4b0793bcf48ca79e41a23f14ab83aa5[m
+Author: Marcos Souza <marcos.dev.ti@gmail.com>
+Date:   Sat Jan 18 23:33:26 2020 -0500
+
+    CommandHandlers e QueryHandlers
+
+[33mcommit 3e37516e538532c4136f16984feafb3ca1d46b02[m
+Author: Marcos Souza <marcos.dev.ti@gmail.com>
+Date:   Sat Jan 18 17:47:27 2020 -0500
+
+    Architecture Base
+
+[33mcommit ad7ae957315bceccecf24cf8b2b2c798f2eaae7a[m
+Author: Marcos Souza <marcos.dev.ti@gmail.com>
+Date:   Sat Jan 18 11:13:47 2020 -0500
+
+    Ajoutez des fichiers projet.
+
+[33mcommit c0fa6a6dc3f2aa4ade4c9034c90bf204c7736e71[m
+Author: Marcos Souza <marcos.dev.ti@gmail.com>
+Date:   Sat Jan 18 11:13:45 2020 -0500
+
+    Ajoutez les fichiers .gitignore et .gitattributes.
